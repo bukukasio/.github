@@ -1,0 +1,12 @@
+{
+    "name": "Lummo Organization Workflow",
+    "description": "Lummo Organization CI starter workflow for golang service.",
+    "categories": [
+        "Go"
+    ],
+    "filePatterns": [
+        "package.json$",
+        "^Dockerfile",
+        ".*\\.md$"
+    ]
+}
