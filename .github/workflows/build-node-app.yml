@@ -1,0 +1,98 @@
+name: "Build and Push NodeJS application to Docker Registry"
+
+on:
+  workflow_call:
+    inputs:
+      node_version:
+        description: "NodeJs version to be used to build-args"
+        type: string
+        default: "12.19.1"
+        required: false
+    secrets:
+      service_account_key:
+        description: "GCP Service Account Key"
+        required: true
+      project_id:
+        description: "GCP Project ID"
+        required: true
+      npm_token:
+        description: "NPM Token to access NPM Registry"
+        required: false
+      slack_webhook_url:
+        description: "Slack Webhook URL for notifications"
+        required: true
+      repo_token:
+        description: "GitHub Repository Token for Slack Notification"
+        required: true  
+
+jobs:
+  npm-test:
+    runs-on: ubuntu-latest
+    env:
+      NPM_TOKEN: ${{ secrets.npm_token }}
+    timeout-minutes: 20
+    steps:
+      # Checkout code
+      - name: 'Checkout repository on: ${{ github.REF }}'
+        uses: actions/checkout@v2
+      # Setup node environment
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.3.0
+        with:
+          node-version: ${{ inputs.node_version }}
+      - name: Run tests
+        run: |
+         npm cache clear --force
+         npm install
+         npm run lint
+         npm run test
+  build:
+    needs: npm-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      # Generating the Docker Image Tag
+      - name: Docker Image Tag creation
+        id: image_tag
+        shell: bash
+        run: |
+          GCR_PROJECT_ID="${{ secrets.project_id }}"
+          IMAGE="gcr.io/$GCR_PROJECT_ID/${{ github.event.repository.name }}"
+          BRANCH="${GITHUB_REF#refs/heads/}"
+          SHA="$(git rev-parse --short HEAD)"
+          JOB_ID="${GITHUB_RUN_NUMBER}"
+          IMAGE_TAG_FULL="$IMAGE:$BRANCH-cijob-$JOB_ID-commit-$SHA"
+          echo "::set-output name=IMAGE::$IMAGE"
+          echo "::set-output name=IMAGE_TAG_FULL::$IMAGE_TAG_FULL"
+      # Login to GCR
+      - name: docker login
+        uses: "lagren/docker-gcr-action@master"
+        with:
+          SERVICE_ACCOUNT_KEY: ${{ secrets.service_account_key }}
+          HOST: "gcr.io"
+      # Build and push to GCR
+      - uses: docker/setup-buildx-action@v1.5.1
+        with:
+          driver: docker
+      - name: docker publish image
+        uses: docker/build-push-action@v2.6.1
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.image_tag.outputs.IMAGE_TAG_FULL }}
+          build-args: NPM_TOKEN=${{ secrets.npm_token }}
+  slack-workflow-status:
+    if: always()
+    name: Post Workflow Status To Slack
+    needs:
+      - npm-test
+      - build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Slack Workflow Notification
+        uses: Gamesight/slack-workflow-status@v1.0.1
+        with:
+          repo_token: ${{secrets.repo_token}}
+          slack_webhook_url: ${{secrets.slack_webhook_url}}        
