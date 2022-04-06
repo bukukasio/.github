@@ -1,0 +1,36 @@
+name: "NPM Test"
+
+on:
+  workflow_call:
+    inputs:
+      node_version:
+        description: "NodeJs version to be used to build-args"
+        type: string
+        default: "12.19.1"
+        required: false
+    secrets:
+      npm_token:
+        description: "NPM Token to access NPM Registry"
+        required: false
+
+jobs:
+  npm-test:
+    runs-on: ubuntu-latest
+    env:
+      NPM_TOKEN: ${{ secrets.npm_token }}
+    timeout-minutes: 20
+    steps:
+      # Checkout code
+      - name: "Checkout repository on: ${{ github.REF }}"
+        uses: actions/checkout@v2
+      # Setup node environment
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3.1.0
+        with:
+          node-version: ${{ inputs.node_version }}
+      - name: Run tests
+        run: |
+          npm cache clear --force
+          npm install
+          npm run lint
+          npm run test

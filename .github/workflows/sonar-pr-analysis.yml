@@ -1,0 +1,38 @@
+name: Sonar PR Analysis
+on:
+  workflow_call:
+    secrets:
+      sonar_token:
+        description: "Sonarqube Token"
+        required: true
+      sonar_host:
+        description: "Sonarqube Host URL"
+        required: true
+jobs:
+  scan:
+    name: SonarScan
+    runs-on: [self-hosted, tokko]
+    timeout-minutes: 20
+    steps:
+      - name: 'Checkout repository on: ${{ github.REF }}'
+        uses: actions/checkout@v2
+      - name: Retrieve entire repository history
+        run: |
+          git fetch --prune --unshallow
+      - uses: actions/download-artifact@v2
+        with:
+          name: coverage-output
+          path: .
+      - uses: docker://sonarsource/sonar-scanner-cli:latest
+        env:
+          SONAR_TOKEN: ${{ secrets.sonar_token }}
+          SONAR_HOST_URL: ${{ secrets.sonar_host }}
+        with:
+          projectBaseDir: .
+          args: >
+            -Dsonar.projectKey=${{ github.event.repository.name }}
+            -Dsonar.pullrequest.key=${{ github.event.number }}
+            -Dsonar.pullrequest.branch=${{ github.HEAD_REF }}
+            -Dsonar.pullrequest.base=${{ github.BASE_REF }}
+            -Dsonar.javascript.coveragePlugin=lcov
+            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info

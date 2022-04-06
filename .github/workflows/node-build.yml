@@ -2,12 +2,6 @@ name: "Build and Push NodeJS application to Docker Registry"
 
 on:
   workflow_call:
-    inputs:
-      node_version:
-        description: "NodeJs version to be used to build-args"
-        type: string
-        default: "12.19.1"
-        required: false
     secrets:
       service_account_key:
         description: "GCP Service Account Key"
@@ -18,36 +12,9 @@ on:
       npm_token:
         description: "NPM Token to access NPM Registry"
         required: false
-      slack_webhook_url:
-        description: "Slack Webhook URL for notifications"
-        required: true
-      repo_token:
-        description: "GitHub Repository Token for Slack Notification"
-        required: true  
 
 jobs:
-  npm-test:
-    runs-on: ubuntu-latest
-    env:
-      NPM_TOKEN: ${{ secrets.npm_token }}
-    timeout-minutes: 20
-    steps:
-      # Checkout code
-      - name: 'Checkout repository on: ${{ github.REF }}'
-        uses: actions/checkout@v2
-      # Setup node environment
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v2.3.0
-        with:
-          node-version: ${{ inputs.node_version }}
-      - name: Run tests
-        run: |
-         npm cache clear --force
-         npm install
-         npm run lint
-         npm run test
   build:
-    needs: npm-test
     runs-on: ubuntu-latest
     steps:
       - name: checkout
@@ -83,16 +50,3 @@ jobs:
           push: true
           tags: ${{ steps.image_tag.outputs.IMAGE_TAG_FULL }}
           build-args: NPM_TOKEN=${{ secrets.npm_token }}
-  slack-workflow-status:
-    if: always()
-    name: Post Workflow Status To Slack
-    needs:
-      - npm-test
-      - build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Slack Workflow Notification
-        uses: Gamesight/slack-workflow-status@v1.0.1
-        with:
-          repo_token: ${{secrets.repo_token}}
-          slack_webhook_url: ${{secrets.slack_webhook_url}}        

@@ -1,0 +1,21 @@
+name: "Slack Notification"
+
+on:
+  workflow_call:
+    secrets:
+      slack_webhook_url:
+        description: "Slack Webhook URL for notifications"
+        required: true
+      repo_token:
+        description: "GitHub Repository Token for Slack Notification"
+        required: true
+
+jobs:
+  slack-workflow-status:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Slack Workflow Notification
+        uses: Gamesight/slack-workflow-status@v1.0.1
+        with:
+          repo_token: ${{secrets.repo_token}}
+          slack_webhook_url: ${{secrets.slack_webhook_url}}
