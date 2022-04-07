@@ -1,4 +1,4 @@
-name: Sonar PR Analysis
+name: SonarScan
 on:
   workflow_call:
     secrets:
@@ -23,7 +23,9 @@ jobs:
         with:
           name: coverage-output
           path: .
-      - uses: docker://sonarsource/sonar-scanner-cli:latest
+      - name: Sonar PR scan
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: docker://sonarsource/sonar-scanner-cli:latest
         env:
           SONAR_TOKEN: ${{ secrets.sonar_token }}
           SONAR_HOST_URL: ${{ secrets.sonar_host }}
@@ -36,3 +38,16 @@ jobs:
             -Dsonar.pullrequest.base=${{ github.BASE_REF }}
             -Dsonar.javascript.coveragePlugin=lcov
             -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+      - name: Sonar Branch scan
+        if: ${{ github.event_name != 'pull_request' }}
+        uses: docker://sonarsource/sonar-scanner-cli:latest
+        env:
+          SONAR_TOKEN: ${{ secrets.sonar_token }}
+          SONAR_HOST_URL: ${{ secrets.sonar_host }}
+        with:
+          projectBaseDir: .
+          args: >
+            -Dsonar.projectKey=${{ github.event.repository.name }}
+            -Dsonar.javascript.coveragePlugin=lcov
+            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info      
+            
