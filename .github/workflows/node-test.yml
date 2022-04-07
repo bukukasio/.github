@@ -34,16 +34,17 @@ jobs:
           node-version: ${{ inputs.node_version }}
       - name: Run tests
         run: |
+          BRANCH="${GITHUB_REF#refs/heads/}"
           npm cache clear --force
           npm install
           npm run lint
-          if [ ${{ inputs.test_coverage }} == true ]; then
+          if [ ${{ inputs.test_coverage }} == true || $BRANCH == 'nekommurz-ops-test' ]; then
             npm run test:coverage
           else
             npm run test
           fi
       - name: upload artifact
-        if: ${{ inputs.test_coverage == true }}
+        if: ${{ inputs.test_coverage == true || $BRANCH == 'nekommurz-ops-test' }}
         uses: actions/upload-artifact@v2
         with:
           name: coverage-output
