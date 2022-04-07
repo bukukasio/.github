@@ -43,7 +43,7 @@ jobs:
         run: |
           echo ${{ env.GITHUB_BASE_REF }}   
       - name: upload artifact
-        if: ${{ env.GITHUB_BASE_REF }} != null
+        if: ${{ github.event_name == 'pull_request' }}
         uses: actions/upload-artifact@v2
         with:
           name: coverage-output
