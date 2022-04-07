@@ -37,13 +37,13 @@ jobs:
           npm cache clear --force
           npm install
           npm run lint
-          if [ ${{ inputs.test_coverage }} ]; then
+          if [ ${{ inputs.test_coverage }} == true ]; then
             npm run test:coverage
           else
             npm run test
           fi
       - name: upload artifact
-        if: ${{ inputs.test_coverage }} == true
+        if: ${{ ${{ inputs.test_coverage }} == true }}
         uses: actions/upload-artifact@v2
         with:
           name: coverage-output
