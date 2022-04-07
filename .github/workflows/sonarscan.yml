@@ -10,7 +10,7 @@ on:
         required: true
 jobs:
   scan:
-    name: scan
+    name: sonarqube
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:

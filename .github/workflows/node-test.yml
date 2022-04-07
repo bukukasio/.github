@@ -19,6 +19,7 @@ on:
 
 jobs:
   test:
+    name: npm
     runs-on: ubuntu-latest
     env:
       NPM_TOKEN: ${{ secrets.npm_token }}

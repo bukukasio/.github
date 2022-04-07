@@ -12,6 +12,7 @@ on:
 
 jobs:
   slack-workflow-status:
+    name: slack
     runs-on: ubuntu-latest
     steps:
       - name: Slack Workflow Notification
