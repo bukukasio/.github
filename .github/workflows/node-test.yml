@@ -38,7 +38,7 @@ jobs:
           npm cache clear --force
           npm install
           npm run lint
-          if [ ${{ inputs.test_coverage }} == true || ${{ env.BRANCH == 'nekommurz-ops-test' }} ]; then
+          if [[ (${{ inputs.test_coverage }} == true) || (${{ env.BRANCH == 'nekommurz-ops-test' }}) ]]; then
             npm run test:coverage
           else
             npm run test
