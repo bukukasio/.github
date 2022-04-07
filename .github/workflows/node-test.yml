@@ -40,7 +40,7 @@ jobs:
             npm run test:coverage
           fi
       - name: upload artifact
-        if: ${{ github.event.event }} == "pull_request"
+        if: ${{ env.GITHUB_BASE_REF }}
         uses: actions/upload-artifact@v2
         with:
           name: coverage-output
