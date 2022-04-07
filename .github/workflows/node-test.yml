@@ -8,6 +8,10 @@ on:
         type: string
         default: "12.19.1"
         required: false
+      test_coverage:
+        description: "Enable or Disable Test Coverage"
+        type: boolean
+        required: false
     secrets:
       npm_token:
         description: "NPM Token to access NPM Registry"
@@ -33,17 +37,13 @@ jobs:
           npm cache clear --force
           npm install
           npm run lint
-          if [ -z $GITHUB_BASE_REF ]
-          then
-            npm run test
-          else
+          if [ ${{ inputs.test_coverage }} ]; then
             npm run test:coverage
+          else
+            npm run test
           fi
-      - name: display env.GITHUB_BASE_REF
-        run: |
-          echo ${{ env.GITHUB_BASE_REF }}   
       - name: upload artifact
-        if: ${{ github.event_name == 'pull_request' }}
+        if: ${{ inputs.test_coverage }} == true
         uses: actions/upload-artifact@v2
         with:
           name: coverage-output
