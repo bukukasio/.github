@@ -22,6 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       NPM_TOKEN: ${{ secrets.npm_token }}
+      BRANCH: ${GITHUB_REF#refs/heads/}
     timeout-minutes: 20
     steps:
       # Checkout code
@@ -37,13 +38,13 @@ jobs:
           npm cache clear --force
           npm install
           npm run lint
-          if [ ${{ inputs.test_coverage }} ]; then
+          if [ ${{ inputs.test_coverage }} == true ] || [ ${{ env.BRANCH }} == 'nekommurz-ops-test' ]; then
             npm run test:coverage
           else
             npm run test
           fi
       - name: upload artifact
-        if: ${{ inputs.test_coverage }} == true
+        if: (inputs.test_coverage == true) || (github.ref == 'refs/heads/nekommurz-ops-test')
         uses: actions/upload-artifact@v2
         with:
           name: coverage-output
