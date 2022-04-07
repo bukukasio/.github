@@ -44,8 +44,7 @@ jobs:
             npm run test
           fi
       - name: upload artifact
-        if: |
-          ${{ (inputs.test_coverage == true) || (github.ref == 'refs/heads/nekommurz-ops-test') }}
+        if: (inputs.test_coverage == true) || (github.ref == 'refs/heads/nekommurz-ops-test')
         uses: actions/upload-artifact@v2
         with:
           name: coverage-output
