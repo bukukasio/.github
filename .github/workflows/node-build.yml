@@ -2,6 +2,12 @@ name: "Build and Push NodeJS application to Docker Registry"
 
 on:
   workflow_call:
+    inputs:
+      image_name: 
+        description: "Docker image name"
+        required: false
+        type: string
+        default: ${{ github.event.repository.name }}
     secrets:
       service_account_key:
         description: "GCP Service Account Key"
@@ -26,7 +32,7 @@ jobs:
         shell: bash
         run: |
           GCR_PROJECT_ID="${{ secrets.project_id }}"
-          IMAGE="gcr.io/$GCR_PROJECT_ID/${{ github.event.repository.name }}"
+          IMAGE="gcr.io/$GCR_PROJECT_ID/${{ inputs.image_name }}"
           BRANCH="${GITHUB_REF#refs/heads/}"
           SHA="$(git rev-parse --short HEAD)"
           JOB_ID="${GITHUB_RUN_NUMBER}"
