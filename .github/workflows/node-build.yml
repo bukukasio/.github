@@ -57,3 +57,10 @@ jobs:
           push: true
           tags: ${{ steps.image_tag.outputs.IMAGE_TAG_FULL }}
           build-args: NPM_TOKEN=${{ secrets.npm_token }}
+      - name: Build details
+        if: always()
+        uses: actions/github-script@v5
+        with:
+          script: |
+            core.info(`🏁 Branch == ${GITHUB_REF#refs/heads/}`)
+            core.info(`🏁 Image == ${{ steps.image_tag.outputs.IMAGE_TAG_FULL }}`)
