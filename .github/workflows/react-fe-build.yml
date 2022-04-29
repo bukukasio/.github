@@ -24,17 +24,17 @@ jobs:
     steps:
       - name: 'Checkout repository on: ${{ github.REF }}'
         uses: actions/checkout@v2
-      - name: setup Node
-        uses: actions/setup-node@v1
-        with:
-          node-version: 14.17.1
-          registry-url: 'https://npm.pkg.github.com'
-      - name: npm install
-        run: npm install
-      - name: npm test  
-        run: npm run test
-      - name: npm build
-        run: npm run build
+      # - name: setup Node
+      #   uses: actions/setup-node@v1
+      #   with:
+      #     node-version: 14.17.1
+      #     registry-url: 'https://npm.pkg.github.com'
+      # - name: npm install
+      #   run: npm install
+      # - name: npm test  
+      #   run: npm run test
+      # - name: npm build
+      #   run: npm run build
       - name: test
         run: |
           echo "SERVICE_ACCOUNT_KEY >>>> ${{ secrets.service_account_key }}"
@@ -43,19 +43,19 @@ jobs:
           if [[ -z "${SERVICE_ACCOUNT_KEY}" ]]; then
               echo "SERVICE_ACCOUNT_KEY is not set"
           fi
-          
+
           if [[ -z "${PROJECT_ID}" ]]; then
               echo "PROJECT_ID is not set"
           fi
-          
+
           if [[ -z "${STATIC_BUCKET_NAME}" ]]; then
               echo "STATIC_BUCKET_NAME is not set"
           fi
-          
+
       - name: 'Authenticate GCloud'
         uses: 'google-github-actions/auth@v0'
         with:
-          service_account: '${{ inputs.service_account_key }}'
+          credentials_json: '${{ inputs.service_account_key }}'
       - name: Set up Cloud SDK 
         uses: google-github-actions/setup-gcloud@v0
         with:
