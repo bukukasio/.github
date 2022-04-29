@@ -68,7 +68,7 @@ jobs:
         env:
           GOOGLE_CLOUD_ACCOUNT: "${{ steps.build_env.outputs.GOOGLE_CLOUD_ACCOUNT }}"
         with:
-          credentials: "${{ secrets[env.GOOGLE_CLOUD_ACCOUNT] }}"
+          credentials: "${{ inputs.service_account_key }}"
           path: sample
           destination: "tokko-test-ops2/test"
           parent: false
