@@ -1,0 +1,89 @@
+name: "Build and Push ReactJS application to GCS Bucket"
+
+on:
+  workflow_call:
+    inputs:
+      bucket_name: 
+        description: "Bucket Name"
+        required: true
+        type: string
+      project_id:
+        description: "GCP Project ID"
+        required: true
+        type: string
+    secrets:
+      service_account_key:
+        description: "GCP Service Account Key"
+        required: true
+
+jobs:
+  build_and_deploy:
+    name: Setup
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: 'Checkout repository on: ${{ github.REF }}'
+        uses: actions/checkout@v2
+      - name: set build env
+        id: build_env
+        run: |
+          BRANCH="${GITHUB_REF#refs/heads/}"
+          if [ $BRANCH == 'master' ]
+          then
+            echo "::set-output name=PROJECT_ID::tokko-production"
+            echo "::set-output name=GOOGLE_CLOUD_ACCOUNT::TOKKO_GOOGLE_CLOUD_ACCOUNT_PRD"
+            echo "::set-output name=STATIC_BUCKET_NAME::tokko-lummo-prd-static-website"
+          elif [ $BRANCH == 'staging' ]
+          then
+            echo "::set-output name=PROJECT_ID::beecash-staging"
+            echo "::set-output name=STATIC_BUCKET_NAME::tokko-staging-asia-merchant-web"
+            echo "::set-output name=GOOGLE_CLOUD_ACCOUNT::GOOGLE_CLOUD_ACCOUNT"
+          else
+            echo "::set-output name=PROJECT_ID::beecash-staging"
+            echo "::set-output name=STATIC_BUCKET_NAME::tokko-dev-asia-merchant-web"
+            echo "::set-output name=GOOGLE_CLOUD_ACCOUNT::GOOGLE_CLOUD_ACCOUNT"
+            if [[ $BRANCH =~ ^auxano* ]]
+            then
+              echo "::set-output name=STATIC_BUCKET_NAME::tokko-auxano-asia-merchant-web"
+            elif [[ $BRANCH =~ ^croesus* ]]
+            then
+              echo "::set-output name=STATIC_BUCKET_NAME::tokko-croesus-asia-merchant-web"
+            elif [[ $BRANCH =~ ^nekommurz* ]]
+            then
+              echo "::set-output name=STATIC_BUCKET_NAME::tokko-nekommurz-asia-merchant-web"
+            fi
+          fi
+      # Build & Deploy to Beecash Environment
+      - name: Set up Cloud SDK 
+        uses: google-github-actions/setup-gcloud@v0.6.0
+        # env:
+        #   GOOGLE_CLOUD_ACCOUNT: "${{ inputs.service_account_key }}"
+        with:
+          project_id: "${{ inputs.project_id }}"
+          service_account_key: ${{ inputs.service_account_key }}
+          export_default_credentials: true
+      # Initialise Node environment
+      - name: setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.17.1
+          registry-url: 'https://npm.pkg.github.com'
+      - name: npm install
+        run: npm install
+      - name: npm test  
+        run: npm run ci-test
+      - name: npm build
+        run: npm run build
+      - name: Cloud Storage Uploader
+        uses: google-github-actions/upload-cloud-storage@v0.9.0
+        # env:
+        #   GOOGLE_CLOUD_ACCOUNT: "${{ steps.build_env.outputs.GOOGLE_CLOUD_ACCOUNT }}"
+        with:
+          credentials: ${{ secrets.service_account_key }}
+          path: build
+          destination: ${{ input.STATIC_BUCKET_NAME }}
+          parent: false   
+      - name: Invalidate CDN
+        run: |
+         gcloud compute url-maps invalidate-cdn-cache ${{steps.build_env.outputs.STATIC_BUCKET_NAME}}-lb --path "/*" --async
+         echo "CDN invalidation started"
