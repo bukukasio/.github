@@ -24,14 +24,15 @@ jobs:
     steps:
       - name: 'Checkout repository on: ${{ github.REF }}'
         uses: actions/checkout@v2
+      - name: 'Authenticate GCloud'
+        uses: 'google-github-actions/auth@v0'
+        with:
+          credentials_json: '${{ inputs.service_account_key }}'
       # Build & Deploy to Beecash Environment
       - name: Set up Cloud SDK 
-        uses: google-github-actions/setup-gcloud@v0.6.0
-        # env:
-        #   GOOGLE_CLOUD_ACCOUNT: "${{ inputs.service_account_key }}"
+        uses: google-github-actions/setup-gcloud@v0
         with:
           project_id: "${{ inputs.project_id }}"
-          service_account_key: ${{ inputs.service_account_key }}
           export_default_credentials: true
       # Initialise Node environment
       - name: setup Node
