@@ -7,10 +7,11 @@ on:
         description: "Bucket Name"
         required: true
         type: string
+      # PROJECT_ID:
+      #   description: "GCP Project ID"
+      #   required: true
+      #   type: string
     secrets:
-      PROJECT_ID:
-        description: "GCP Project ID"
-        required: true
       SERVICE_ACCOUNT_KEY:
         description: "GCP Service Account Key"
         required: true
@@ -37,15 +38,15 @@ jobs:
       - name: test
         run: |
           echo "SERVICE_ACCOUNT_KEY >>>> ${{ secrets.SERVICE_ACCOUNT_KEY }}"
-          echo "PROJECT_ID >>>> ${{ inputs.PROJECT_ID }}"
+          # echo "PROJECT_ID >>>> ${{ inputs.PROJECT_ID }}"
           echo "STATIC_BUCKET_NAME >>>> ${{ inputs.BUCKET_NAME }}"
           if [[ -z "${SERVICE_ACCOUNT_KEY}" ]]; then
               echo "SERVICE_ACCOUNT_KEY is not set"
           fi
 
-          if [[ -z "${PROJECT_ID}" ]]; then
-              echo "PROJECT_ID is not set"
-          fi
+          # if [[ -z "${PROJECT_ID}" ]]; then
+          #     echo "PROJECT_ID is not set"
+          # fi
 
           if [[ -z "${STATIC_BUCKET_NAME}" ]]; then
               echo "STATIC_BUCKET_NAME is not set"
