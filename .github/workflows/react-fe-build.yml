@@ -40,6 +40,18 @@ jobs:
           echo "SERVICE_ACCOUNT_KEY >>>> ${{ secrets.service_account_key }}"
           echo "PROJECT_ID >>>> ${{ inputs.project_id }}"
           echo "STATIC_BUCKET_NAME >>>> ${{ inputs.bucket_name }}"
+          if [[ -z "${SERVICE_ACCOUNT_KEY}" ]]; then
+              echo "SERVICE_ACCOUNT_KEY is not set"
+          fi
+          
+          if [[ -z "${PROJECT_ID}" ]]; then
+              echo "PROJECT_ID is not set"
+          fi
+          
+          if [[ -z "${STATIC_BUCKET_NAME}" ]]; then
+              echo "STATIC_BUCKET_NAME is not set"
+          fi
+          
       - name: 'Authenticate GCloud'
         uses: 'google-github-actions/auth@v0'
         with:
