@@ -28,13 +28,11 @@ jobs:
         uses: 'google-github-actions/auth@v0'
         with:
           credentials_json: '${{ inputs.service_account_key }}'
-      # Build & Deploy to Beecash Environment
       - name: Set up Cloud SDK 
         uses: google-github-actions/setup-gcloud@v0
         with:
           project_id: "${{ inputs.project_id }}"
           export_default_credentials: true
-      # Initialise Node environment
       - name: setup Node
         uses: actions/setup-node@v1
         with:
