@@ -7,11 +7,10 @@ on:
         description: "Bucket Name"
         required: true
         type: string
+    secrets:
       PROJECT_ID:
         description: "GCP Project ID"
         required: true
-        type: string
-    secrets:
       SERVICE_ACCOUNT_KEY:
         description: "GCP Service Account Key"
         required: true
