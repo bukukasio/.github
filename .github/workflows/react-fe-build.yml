@@ -60,26 +60,17 @@ jobs:
       #   with:
       #     PROJECT_ID: "${{ inputs.PROJECT_ID }}"
       #     export_default_credentials: true
-      - id: 'auth'
-        uses: 'google-github-actions/auth@v0'
-        with:
-          credentials_json: '${{ secrets.SERVICE_ACCOUNT_KEY }}'
+  
       - name: Cloud Storage Uploader
-        uses: google-github-actions/upload-cloud-storage@v0
+        uses: google-github-actions/upload-cloud-storage@v0.9.0
+        env:
+          GOOGLE_CLOUD_ACCOUNT: "${{ secrets.SERVICE_ACCOUNT_KEY }}"
         with:
-          path: sample
-          destination: "tokko-test-ops2/test"
-          parent: false
-      # - name: Cloud Storage Uploader
-      #   uses: google-github-actions/upload-cloud-storage@v0.9.0
-      #   # env:
-      #   #   GOOGLE_CLOUD_ACCOUNT: "${{ steps.build_env.outputs.GOOGLE_CLOUD_ACCOUNT }}"
-      #   with:
-      #     credentials: ${{ secrets.SERVICE_ACCOUNT_KEY }}
-      #     path: build
-      #     destination: ${{ input.STATIC_BUCKET_NAME }}
-      #     parent: false   
-      # - name: Invalidate CDN
+          credentials: ${{ secrets[env.GOOGLE_CLOUD_ACCOUNT] }}
+          path: build
+          destination: ${{ input.STATIC_BUCKET_NAME }}
+          parent: false   
+      - name: Invalidate CDN
       #   run: |
       #    gcloud compute url-maps invalidate-cdn-cache ${{steps.build_env.outputs.STATIC_BUCKET_NAME}}-lb --path "/*" --async
       #    echo "CDN invalidation started"
