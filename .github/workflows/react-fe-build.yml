@@ -60,12 +60,13 @@ jobs:
       #   with:
       #     PROJECT_ID: "${{ inputs.PROJECT_ID }}"
       #     export_default_credentials: true
-
-
-      - name: Cloud Storage Uploader
-        uses: google-github-actions/upload-cloud-storage@v0.9.0
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v0'
         with:
-          credentials_json: "${{ secrets.SERVICE_ACCOUNT_KEY }}"
+          credentials_json: '${{ secrets.SERVICE_ACCOUNT_KEY }}'
+      - name: Cloud Storage Uploader
+        uses: google-github-actions/upload-cloud-storage@v0
+        with:
           path: sample
           destination: "tokko-test-ops2/test"
           parent: false
