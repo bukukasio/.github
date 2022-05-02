@@ -15,11 +15,10 @@ on:
         description: "Path to upload"
         required: true
         type: string
+    secrets:
       SERVICE_ACCOUNT_KEY:
         description: "GCP Service Account Key"
         required: true
-        type: string
-
 jobs:
   build_and_deploy:
     name: Setup
@@ -41,10 +40,10 @@ jobs:
       #   run: npm run build
       - name: test
         run: |
-          echo "SERVICE_ACCOUNT_KEY >>>> ${{ inputs.SERVICE_ACCOUNT_KEY }}"
+          echo "SERVICE_ACCOUNT_KEY >>>> ${{ secrets.SERVICE_ACCOUNT_KEY }}"
           echo "PROJECT_ID >>>> ${{ inputs.PROJECT_ID }}"
           echo "STATIC_BUCKET_NAME >>>> ${{ inputs.BUCKET_NAME }}"
-          if [[ -z "${{ inputs.SERVICE_ACCOUNT_KEY }}" ]]; then
+          if [[ -z "${{ secrets.SERVICE_ACCOUNT_KEY }}" ]]; then
               echo "SERVICE_ACCOUNT_KEY is not set"
           fi
 
@@ -58,18 +57,14 @@ jobs:
           
       - name: Set up Cloud SDK 
         uses: google-github-actions/setup-gcloud@v0.6.0
-        env:
-          GOOGLE_CLOUD_ACCOUNT: "${{ inputs.SERVICE_ACCOUNT_KEY }}"
         with:
           project_id: "${{ inputs.PROJECT_ID }}"
-          service_account_key: ${{ secrets[env.GOOGLE_CLOUD_ACCOUNT] }}
+          service_account_key: ${{ secrets.SERVICE_ACCOUNT_KEY }}
           export_default_credentials: true
       - name: Cloud Storage Uploader
         uses: google-github-actions/upload-cloud-storage@v0.9.0
-        env:
-          GOOGLE_CLOUD_ACCOUNT: "${{ inputs.SERVICE_ACCOUNT_KEY }}"
         with:
-          credentials: ${{ secrets[env.GOOGLE_CLOUD_ACCOUNT] }}
+          credentials: ${{ secrets.SERVICE_ACCOUNT_KEY }}
           path: ${{ inputs.PATH }}
           destination: ${{ inputs.BUCKET_NAME }}
           parent: false   
