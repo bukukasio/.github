@@ -70,7 +70,7 @@ jobs:
           path: build
           destination: ${{ input.STATIC_BUCKET_NAME }}
           parent: false   
-      - name: Invalidate CDN
+#       - name: Invalidate CDN
       #   run: |
       #    gcloud compute url-maps invalidate-cdn-cache ${{steps.build_env.outputs.STATIC_BUCKET_NAME}}-lb --path "/*" --async
       #    echo "CDN invalidation started"
