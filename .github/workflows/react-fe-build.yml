@@ -68,7 +68,7 @@ jobs:
         with:
           credentials: ${{ secrets[env.GOOGLE_CLOUD_ACCOUNT] }}
           path: build
-          destination: ${{ input.BUCKET_NAME }}
+          destination: ${{ inputs.BUCKET_NAME }}
           parent: false   
 #       - name: Invalidate CDN
       #   run: |
