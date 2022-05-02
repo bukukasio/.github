@@ -7,10 +7,10 @@ on:
         description: "Bucket Name"
         required: true
         type: string
-      # PROJECT_ID:
-      #   description: "GCP Project ID"
-      #   required: true
-      #   type: string
+      PATH:
+        description: "Path to upload"
+        required: true
+        type: string
     secrets:
       SERVICE_ACCOUNT_KEY:
         description: "GCP Service Account Key"
@@ -67,7 +67,7 @@ jobs:
           GOOGLE_CLOUD_ACCOUNT: "${{ secrets.SERVICE_ACCOUNT_KEY }}"
         with:
           credentials: ${{ secrets[env.GOOGLE_CLOUD_ACCOUNT] }}
-          path: build
+          path: ${{ inputs.PATH }}
           destination: ${{ inputs.BUCKET_NAME }}
           parent: false   
 #       - name: Invalidate CDN
