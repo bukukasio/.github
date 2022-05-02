@@ -37,7 +37,6 @@ jobs:
       #   run: npm run build
       - name: test
         run: |
-          echo "SERVICE_ACCOUNT_KEY >>>> ${{ secrets.SERVICE_ACCOUNT_KEY }}"
           # echo "PROJECT_ID >>>> ${{ inputs.PROJECT_ID }}"
           echo "STATIC_BUCKET_NAME >>>> ${{ inputs.BUCKET_NAME }}"
           if [[ -z "${{ secrets.SERVICE_ACCOUNT_KEY }}" ]]; then
