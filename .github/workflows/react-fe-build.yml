@@ -40,13 +40,8 @@ jobs:
       #   run: npm run build
       - name: test
         run: |
-          echo "SERVICE_ACCOUNT_KEY >>>> ${{ secrets.SERVICE_ACCOUNT_KEY }}"
           echo "PROJECT_ID >>>> ${{ inputs.PROJECT_ID }}"
           echo "STATIC_BUCKET_NAME >>>> ${{ inputs.BUCKET_NAME }}"
-          if [[ -z "${{ secrets.SERVICE_ACCOUNT_KEY }}" ]]; then
-              echo "SERVICE_ACCOUNT_KEY is not set"
-          fi
-
           if [[ -z "${{ inputs.PROJECT_ID }}" ]]; then
               echo "PROJECT_ID is not set"
           fi
