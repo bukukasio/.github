@@ -15,6 +15,14 @@ on:
         description: "Path to upload"
         required: true
         type: string
+      GCP_SECRET_NAME:
+        description: "GCP Secret for the applicaition"
+        required: true
+        type: string
+      SECRET_PATH:
+        description: "Path to copy the application secret"
+        required: true
+        type: string      
     secrets:
       SERVICE_ACCOUNT_KEY:
         description: "GCP Service Account Key"
@@ -27,6 +35,18 @@ jobs:
     steps:
       - name: 'Checkout repository on: ${{ github.REF }}'
         uses: actions/checkout@v2
+      # Build & Deploy to Beecash Environment
+      - name: Set up Cloud SDK 
+        uses: google-github-actions/setup-gcloud@v0.6.0
+        env:
+          GOOGLE_CLOUD_ACCOUNT: "${{ steps.build_env.outputs.GOOGLE_CLOUD_ACCOUNT }}"
+        with:
+          project_id: "${{ inputs.PROJECT_ID }}"
+          service_account_key:  ${{ secrets.SERVICE_ACCOUNT_KEY }}
+          export_default_credentials: true
+      - name: Copy GCP Secret
+        run: gcloud secrets versions access latest --secret="${{ inputs.GCP_SECRET_NAME }}" > ${{ inputs.SECRET_PATH }}
+      # Initialise Node environment
       # - name: setup Node
       #   uses: actions/setup-node@v1
       #   with:
