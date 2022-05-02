@@ -40,7 +40,7 @@ jobs:
           echo "SERVICE_ACCOUNT_KEY >>>> ${{ secrets.SERVICE_ACCOUNT_KEY }}"
           # echo "PROJECT_ID >>>> ${{ inputs.PROJECT_ID }}"
           echo "STATIC_BUCKET_NAME >>>> ${{ inputs.BUCKET_NAME }}"
-          if [[ -z "${SERVICE_ACCOUNT_KEY}" ]]; then
+          if [[ -z "${{ secrets.SERVICE_ACCOUNT_KEY }}" ]]; then
               echo "SERVICE_ACCOUNT_KEY is not set"
           fi
 
@@ -48,7 +48,7 @@ jobs:
           #     echo "PROJECT_ID is not set"
           # fi
 
-          if [[ -z "${STATIC_BUCKET_NAME}" ]]; then
+          if [[ -z "${{ inputs.BUCKET_NAME }}" ]]; then
               echo "STATIC_BUCKET_NAME is not set"
           fi
 
