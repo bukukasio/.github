@@ -6,7 +6,7 @@ on:
       node_version:
         description: "NodeJs version to be used to build-args"
         type: string
-        default: "12.19.1"
+        default: "16.15.0"
         required: false
       project_id: 
         description: "Project Id"
