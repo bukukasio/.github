@@ -47,28 +47,20 @@ jobs:
       - name: Copy GCP Secret
         run: gcloud secrets versions access latest --secret="${{ inputs.GCP_SECRET_NAME }}" > ${{ inputs.SECRET_PATH }}
       # Initialise Node environment
-      # - name: setup Node
-      #   uses: actions/setup-node@v1
-      #   with:
-      #     node-version: 14.17.1
-      #     registry-url: 'https://npm.pkg.github.com'
-      # - name: npm install
-      #   run: npm install
-      # - name: npm test  
-      #   run: npm run test
-      # - name: npm build
-      #   run: npm run build
+      - name: setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.17.1
+          registry-url: 'https://npm.pkg.github.com'
+      - name: npm install
+        run: npm install
+      - name: npm test  
+        run: npm run test
+      - name: npm build
+        run: npm run build
       - name: test
         run: |
-          echo "PROJECT_ID >>>> ${{ inputs.PROJECT_ID }}"
-          echo "STATIC_BUCKET_NAME >>>> ${{ inputs.BUCKET_NAME }}"
-          if [[ -z "${{ inputs.PROJECT_ID }}" ]]; then
-              echo "PROJECT_ID is not set"
-          fi
-
-          if [[ -z "${{ inputs.BUCKET_NAME }}" ]]; then
-              echo "STATIC_BUCKET_NAME is not set"
-          fi
+          cat .env
 
       - name: Cloud Storage Uploader
         uses: google-github-actions/upload-cloud-storage@v0.9.0
@@ -77,7 +69,7 @@ jobs:
           path: ${{ inputs.PATH }}
           destination: ${{ inputs.BUCKET_NAME }}
           parent: false   
-#       - name: Invalidate CDN
-      #   run: |
-      #    gcloud compute url-maps invalidate-cdn-cache ${{steps.build_env.outputs.STATIC_BUCKET_NAME}}-lb --path "/*" --async
-      #    echo "CDN invalidation started"
+      - name: Invalidate CDN
+        run: |
+         gcloud compute url-maps invalidate-cdn-cache ${{steps.build_env.outputs.STATIC_BUCKET_NAME}}-lb --path "/*" --async
+         echo "CDN invalidation started"
