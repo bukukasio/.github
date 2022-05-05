@@ -1,0 +1,75 @@
+name: "Build and Push ReactJS application to GCS Bucket"
+
+on:
+  workflow_call:
+    inputs:
+      node_version:
+        description: "NodeJs version to be used to build-args"
+        type: string
+        default: "16.15.0"
+        required: false
+      project_id: 
+        description: "Project Id"
+        required: true
+        type: string
+      bucket_name: 
+        description: "Bucket Name"
+        required: true
+        type: string
+      path:
+        description: "Path to upload"
+        required: true
+        type: string
+      gcp_secret_name:
+        description: "GCP Secret for the applicaition"
+        required: true
+        type: string
+      secret_path:
+        description: "Path to copy the application secret"
+        required: true
+        type: string      
+    secrets:
+      service_account_key:
+        description: "GCP Service Account Key"
+        required: true
+jobs:
+  build_and_deploy:
+    name: Setup
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: 'Checkout repository on: ${{ github.REF }}'
+        uses: actions/checkout@v2
+      - name: Set up Cloud SDK 
+        uses: google-github-actions/setup-gcloud@v0.6.0
+        env:
+          GOOGLE_CLOUD_ACCOUNT: "${{ steps.build_env.outputs.GOOGLE_CLOUD_ACCOUNT }}"
+        with:
+          project_id: "${{ inputs.project_id }}"
+          service_account_key:  ${{ secrets.service_account_key }}
+          export_default_credentials: true
+      - name: Copy GCP Secret
+        run: gcloud secrets versions access latest --secret="${{ inputs.gcp_secret_name }}" > ${{ inputs.secret_path }}
+      # Initialise Node environment
+      - name: setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ inputs.node_version }}
+          registry-url: 'https://npm.pkg.github.com'
+      - name: npm install
+        run: npm install
+      - name: npm test  
+        run: npm run test
+      - name: npm build
+        run: npm run build
+      - name: Cloud Storage Uploader
+        uses: google-github-actions/upload-cloud-storage@v0.9.0
+        with:
+          credentials: ${{ secrets.service_account_key }}
+          path: ${{ inputs.path }}
+          destination: ${{ inputs.bucket_name }}
+          parent: false   
+      - name: Invalidate CDN
+        run: |
+         gcloud compute url-maps invalidate-cdn-cache ${{inputs.bucket_name }}-lb --path "/*" --async
+         echo "CDN invalidation started"
