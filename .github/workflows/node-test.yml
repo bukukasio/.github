@@ -45,8 +45,8 @@ jobs:
             npm run test
           fi
       - run: |
-          echo "### Branch :seedling: " >> $GITHUB_STEP_SUMMARY
-          echo "#### ${GITHUB_REF#refs/heads/}" >> $GITHUB_STEP_SUMMARY
+          echo "**Branch :seedling: ** :${GITHUB_REF#refs/heads/}" >> $GITHUB_STEP_SUMMARY
+  #        echo "#### ${GITHUB_REF#refs/heads/}" >> $GITHUB_STEP_SUMMARY
       - name: upload artifact
         if: (inputs.test_coverage == true) || (github.ref == 'refs/heads/develop')
         uses: actions/upload-artifact@v2
