@@ -34,15 +34,6 @@ on:
         required: false
 
 jobs:
-  testvalues:
-    name: Create env file and image tag
-      id: image_tag
-      run: |
-        echo 'hi'
-        VALUE={{ inputs.image_name }}
-        echo $VALUE
-        VALUE1=GCR_PROJECT_ID="${{ secrets.project_id_secret }}"
-        echo $VALUE1
   build:
     name: docker
     runs-on: ubuntu-latest
