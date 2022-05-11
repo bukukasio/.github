@@ -23,8 +23,11 @@ on:
       gcp_secret_name:
         description: "GCP Secret Name"
         required: true
-      project_id:
-        description: "GCP Project ID"
+      project_id_secret:
+        description: "GCP Project ID for secret"
+        required: true
+      project_id_docker:
+        description: "GCP Project ID for docker"
         required: true
       npm_token:
         description: "NPM Token to access NPM Registry"
@@ -45,7 +48,7 @@ jobs:
       - id: get_secret
         uses: 'google-github-actions/get-secretmanager-secrets@v0'
         env:
-            GCR_PROJECT_ID="${{ secrets.project_id }}"
+            GCR_PROJECT_ID="${{ secrets.project_id_secret }}"
             GCP_SECRET="${{ secrets.gcp_secret }}"
         with:
           secrets: |-
@@ -57,7 +60,7 @@ jobs:
         run: |
           touch {{ input.env-fileName }}
           echo '${{ steps.get_secret.outputs.env }}' > {{ input.env-fileName }}
-          GCR_PROJECT_ID="${{ secrets.project_id }}"
+          GCR_PROJECT_ID="${{ secrets.project_id_docker }}"
           IMAGE="gcr.io/$GCR_PROJECT_ID/${{ inputs.image_name }}"
           BRANCH="${GITHUB_REF#refs/heads/}"
           SHA="$(git rev-parse --short HEAD)"
