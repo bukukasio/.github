@@ -46,7 +46,7 @@ jobs:
         env:
           GOOGLE_CLOUD_ACCOUNT: "${{ secrets.service_account_key_secret }}"
         with:
-          project_id: "${{ secrets.project_id }}"
+          project_id: "${{ secrets.project_id_secret }}"
           service_account_key:  ${{ secrets.service_account_key_secret }}
           export_default_credentials: true
       - name: Copy GCP Secret
