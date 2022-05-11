@@ -1,4 +1,4 @@
-name: "Build and Push NodeJS application to Docker Registry"
+name: "Build and Push React application to Docker Registry"
 
 on:
   workflow_call:
