@@ -16,6 +16,7 @@ on:
       gcp_secret_name:
         description: "GCP Secret Name"
         required: true
+        type: string
     secrets:
       service_account_key_secret:
         description: "GCP Service Account Key for secret"
