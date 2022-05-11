@@ -1,0 +1,84 @@
+name: "Build and Push React application to Docker Registry"
+
+on:
+  workflow_call:
+    inputs:
+      image_name: 
+        description: "Docker image name"
+        required: false
+        type: string
+        default: ${{ github.event.repository.name }}
+      env_file_path: 
+        description: "Docker Env file name"
+        required: false
+        type: string
+        default: '.env'
+      gcp_secret_name:
+        description: "GCP Secret Name"
+        required: true
+        type: string
+    secrets:
+      secret_project_id_key:
+        description: "GCP Service Account Key for accessing xsecret"
+        required: true
+      gcr_project_id_key:
+        description: "GCP Service Account Key to push image"
+        required: true
+      secret_project_id:
+        description: "GCP Project ID for accessing secret"
+        required: true
+      gcr_project_id:
+        description: "GCP Project ID for accessing docker"
+        required: true
+      npm_token:
+        description: "NPM Token to access NPM Registry"
+        required: false
+
+jobs:
+  build:
+    name: docker
+    runs-on: ubuntu-latest
+    steps:
+      # Set secret as out of the step
+      - name: 'Checkout repository on: ${{ github.REF }}'
+        uses: actions/checkout@v2
+      - name: Set up Cloud SDK 
+        uses: google-github-actions/setup-gcloud@v0.6.0
+        with:
+          project_id: "${{ secrets.secret_project_id }}"
+          service_account_key:  ${{ secrets.secret_project_id_key }}
+          export_default_credentials: true
+      - name: Copy GCP Secret
+        run: gcloud secrets versions access latest --secret="${{ inputs.gcp_secret_name }}" > ${{ inputs.env_file_path }}
+
+      # Create env file and image tag
+      - name: Create env file and image tag
+        id: image_tag
+        run: |
+          GCR_PROJECT_ID="${{ secrets.gcr_project_id }}"
+          IMAGE="gcr.io/$GCR_PROJECT_ID/${{ inputs.image_name }}"
+          BRANCH="${GITHUB_REF#refs/heads/}"
+          SHA="$(git rev-parse --short HEAD)"
+          JOB_ID="${GITHUB_RUN_NUMBER}"
+          IMAGE_TAG_FULL="$IMAGE:$BRANCH-cijob-$JOB_ID-commit-$SHA"
+          echo "::set-output name=IMAGE::$IMAGE"
+          echo "::set-output name=IMAGE_TAG_FULL::$IMAGE_TAG_FULL"
+          echo ":whale2: Image Tag: ${IMAGE_TAG_FULL} " >> $GITHUB_STEP_SUMMARY
+      # Docker Login
+      - name: docker login
+        uses: "lagren/docker-gcr-action@master"
+        with:
+          SERVICE_ACCOUNT_KEY: ${{ secrets.gcr_project_id_key }}
+          HOST: "gcr.io"
+      # Build and push to GCR
+      - uses: docker/setup-buildx-action@v1.5.1
+        with:
+          driver: docker
+      - name: docker publish image
+        uses: docker/build-push-action@v2.6.1
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.image_tag.outputs.IMAGE_TAG_FULL }}
+          build-args: NPM_TOKEN=${{ secrets.npm_token }}
