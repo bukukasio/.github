@@ -20,7 +20,7 @@ on:
       service_account_key_docker:
         description: "GCP Service Account Key to push image"
         required: true
-      gcp_secret:
+      gcp_secret_name:
         description: "GCP Secret Name"
         required: true
       project_id:
