@@ -50,7 +50,7 @@ jobs:
           service_account_key:  ${{ secrets.service_account_key_secret }}
           export_default_credentials: true
       - name: Copy GCP Secret
-        run: gcloud secrets versions access latest --secret="${{ secret.gcp_secret_name }}" > ${{ inputs.env_fileName }}
+        run: gcloud secrets versions access latest --secret="${{ secrets.gcp_secret_name }}" > ${{ inputs.env_fileName }}
 
       # Create env file and image tag
       - name: Create env file and image tag
