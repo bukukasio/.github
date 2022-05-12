@@ -1,6 +1,11 @@
 name: SonarScan
 on:
   workflow_call:
+    inputs:
+      test_coverage:
+        description: "Enable or Disable Test Coverage"
+        type: boolean
+        required: true
     secrets:
       sonar_token:
         description: "Sonarqube Token"
@@ -20,6 +25,7 @@ jobs:
         run: |
           git fetch --prune --unshallow
       - uses: actions/download-artifact@v2
+        if: (inputs.test_coverage == true)
         with:
           name: coverage-output
           path: coverage
