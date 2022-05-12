@@ -4,6 +4,7 @@ on:
     inputs:
       test_coverage:
         description: "Enable or Disable Test Coverage"
+        default: true
         type: boolean
         required: false
     secrets:
