@@ -35,7 +35,7 @@ on:
 jobs:
   build_and_deploy:
     name: Setup
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, tokko]
     timeout-minutes: 20
     steps:
       - name: 'Checkout repository on: ${{ github.REF }}'
