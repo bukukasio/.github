@@ -60,10 +60,11 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ inputs.node_version }}
+          registry-url: 'https://npm.pkg.github.com'
       - name: npm install
         run: npm install
       - name: npm test  
-        run: npm run ci-test
+        run: npm run test
       - name: npm build
         run: CI=${{ inputs.ci_status }} npm run build
       - name: Cloud Storage Uploader
