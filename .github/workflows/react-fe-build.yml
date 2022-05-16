@@ -64,8 +64,8 @@ jobs:
         run: npm install
       - name: npm test  
         run: npm run ci-test
-      - name: ${{ inputs.ci_status }} npm build
-        run:  npm run build
+      - name: npm build
+        run: ${{ inputs.ci_status }} npm run build
       - name: Cloud Storage Uploader
         uses: google-github-actions/upload-cloud-storage@v0.9.0
         with:
