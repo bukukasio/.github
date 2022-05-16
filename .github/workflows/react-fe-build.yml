@@ -55,7 +55,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ inputs.node_version }}
-          registry-url: 'https://npm.pkg.github.com'
       - name: npm install
         run: npm install
       - name: npm test  
