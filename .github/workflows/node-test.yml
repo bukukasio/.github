@@ -37,7 +37,6 @@ jobs:
           node-version: ${{ inputs.node_version }}
       - name: Run tests
         run: |
-          export NODE_OPTIONS=--max_old_space_size=6500
           npm cache clear --force
           npm install
           npm run lint
