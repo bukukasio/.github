@@ -27,7 +27,7 @@ jobs:
       env:
         NPM_TOKEN: ${{ secrets.npm_token }}
         BRANCH: ${GITHUB_REF#refs/heads/}
-      options: --cpus 4 -m 16
+      options: --cpus 4
     timeout-minutes: 45
     steps:
       # Checkout code
