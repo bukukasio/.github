@@ -53,5 +53,37 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: coverage-output
-          path: coverage/    
-          
+          path: coverage/
+
+## Check for new db migration
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v22.2
+        with:
+          files: |
+            migrations/*.ts
+
+      - name: Comment on PR
+        if: ${{ ( github.BASE_REF == 'master' ) && ( steps.changed-files.outputs.all_changed_files ) && ( github.event_name == 'pull_request' ) }}
+        uses: thollander/actions-comment-pull-request@v1
+        with:
+          message: |
+            :warning: @bukukasio/tokko-leads DB Migration query detected :warning:
+          reactions: eyes
+          GITHUB_TOKEN: ${{ secrets.npm_token }}
+
+      - name: Edit PR comment
+        if: ${{ ( github.BASE_REF == 'master' ) && ( steps.changed-files.outputs.all_changed_files ) && ( github.event_name == 'pull_request' ) }}
+        uses: thollander/actions-comment-pull-request@v1
+        with:
+          message: ":warning: @bukukasio/tokko-leads DB Migration query detected :warning:"
+          comment_includes: "DB Migration query detected"
+          GITHUB_TOKEN: ${{ secrets.npm_token }}
+
+      - name: Create PR review request
+        if: ${{ ( github.BASE_REF == 'master' ) && ( steps.changed-files.outputs.all_changed_files ) && ( github.event_name == 'pull_request' ) }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.npm_token }}
+        run: |
+          gh pr edit ${{ github.event.pull_request.html_url }} \
+              --add-reviewer bukukasio/tokko-leads     
