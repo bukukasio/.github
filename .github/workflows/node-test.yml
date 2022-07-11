@@ -59,6 +59,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
+      # Checkout code
+      - name: "Checkout repository on: ${{ github.REF }}"
+        uses: actions/checkout@v2
+
       - name: "Check migration file existence"
         id: file-exists
         uses: andstor/file-existence-action@v1
@@ -66,6 +70,7 @@ jobs:
           files: "migrations/*.ts"
 
       - name: Get changed files
+        if: ${{ ( steps.file-exists.files_exists == 'true' ) }}
         id: changed-files
         uses: tj-actions/changed-files@v22.2
         with:
