@@ -70,7 +70,7 @@ jobs:
           files: "migrations/*.ts"
 
       - name: Get changed files
-        if: ${{ ( steps.file-exists.files_exists == 'true' ) }}
+        if: ${{ ( steps.file-exists.outputs.files_exists == 'true' ) }}
         id: changed-files
         uses: tj-actions/changed-files@v22.2
         with:
@@ -78,7 +78,7 @@ jobs:
             migrations/*.ts
 
       - name: Comment on PR
-        if: ${{ ( github.BASE_REF == 'master' ) && ( steps.changed-files.outputs.all_changed_files ) && ( github.event_name == 'pull_request' ) && ( steps.file-exists.files_exists == 'true' ) }}
+        if: ${{ ( github.BASE_REF == 'master' ) && ( steps.changed-files.outputs.all_changed_files ) && ( github.event_name == 'pull_request' ) && ( steps.file-exists.outputs.files_exists == 'true' ) }}
         uses: thollander/actions-comment-pull-request@v1
         with:
           message: |
@@ -87,7 +87,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.npm_token }}
 
       - name: Edit PR comment
-        if: ${{ ( github.BASE_REF == 'master' ) && ( steps.changed-files.outputs.all_changed_files ) && ( github.event_name == 'pull_request' ) && ( steps.file-exists.files_exists == 'true' ) }}
+        if: ${{ ( github.BASE_REF == 'master' ) && ( steps.changed-files.outputs.all_changed_files ) && ( github.event_name == 'pull_request' ) && ( steps.file-exists.outputs.files_exists == 'true' ) }}
         uses: thollander/actions-comment-pull-request@v1
         with:
           message: ":warning: @bukukasio/tokko-leads DB Migration query detected :warning:"
@@ -95,7 +95,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.npm_token }}
 
       - name: Create PR review request
-        if: ${{ ( github.BASE_REF == 'master' ) && ( steps.changed-files.outputs.all_changed_files ) && ( github.event_name == 'pull_request' ) && ( steps.file-exists.files_exists == 'true' ) }}
+        if: ${{ ( github.BASE_REF == 'master' ) && ( steps.changed-files.outputs.all_changed_files ) && ( github.event_name == 'pull_request' ) && ( steps.file-exists.outputs.files_exists == 'true' ) }}
         env:
           GITHUB_TOKEN: ${{ secrets.npm_token }}
         run: |
@@ -103,7 +103,7 @@ jobs:
               --add-reviewer bukukasio/tokko-leads     
       
       - name: Add Label in PR
-        if: ${{ ( github.BASE_REF == 'master' ) && ( steps.changed-files.outputs.all_changed_files ) && ( github.event_name == 'pull_request' ) && ( steps.file-exists.files_exists == 'true' ) }}
+        if: ${{ ( github.BASE_REF == 'master' ) && ( steps.changed-files.outputs.all_changed_files ) && ( github.event_name == 'pull_request' ) && ( steps.file-exists.outputs.files_exists == 'true' ) }}
         uses: actions-ecosystem/action-add-labels@v1
         with:
           labels: |
