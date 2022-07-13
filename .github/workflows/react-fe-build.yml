@@ -59,7 +59,7 @@ jobs:
       - name: setup Node
         uses: actions/setup-node@v1
         env:
-          NODE_OPTIONS: '--max_old_space_size=4096'
+          NODE_OPTIONS: '--max_old_space_size=7168'
         with:
           node-version: ${{ inputs.node_version }}
           registry-url: 'https://npm.pkg.github.com'
