@@ -40,7 +40,7 @@ on:
 jobs:
   build_and_deploy:
     name: Setup
-    runs-on: ['self-hosted', 'kubernetes', 'staging']
+    runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
       - name: 'Checkout repository on: ${{ github.REF }}'
