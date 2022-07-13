@@ -68,7 +68,7 @@ jobs:
       - name: npm test  
         run: npm run test
       - name: npm build
-        run: CI=${{ inputs.ci_status }} npm run build
+        run: CI=${{ inputs.ci_status }} node --max-old-space-size=8192 /usr/bin/npm run build
       - name: Cloud Storage Uploader
         uses: google-github-actions/upload-cloud-storage@v0.9.0
         with:
