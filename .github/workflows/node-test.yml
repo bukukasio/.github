@@ -57,7 +57,7 @@ jobs:
   migration-check:
     name: check for migration files
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
     steps:
       # Checkout code
       - name: "Checkout repository on: ${{ github.REF }}"
