@@ -1,4 +1,4 @@
-name: Leaked Secrets Scan
+name: Common Workflows
 on:
   workflow_call:
 jobs:
