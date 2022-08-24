@@ -71,11 +71,11 @@ if __name__ == "__main__":
 
     repos=listRepos()
 
-    # for repo in repos:
-    #     repoName=str(repo)
-    #     repoPath,repoName=cloneRepo(repoName)
-    #     pushStatus=copyWorkflows(repoPath,repoName)
-    #     if pushStatus:
-        #     pushChangesDefault(repoPath)
-        #     pushChangesMaster(repoPath,repoName)
+    for repo in repos:
+        repoName=str(repo)
+        repoPath,repoName=cloneRepo(repoName)
+        pushStatus=copyWorkflows(repoPath,repoName)
+        if pushStatus:
+            pushChangesDefault(repoPath)
+            pushChangesMaster(repoPath,repoName)
 
