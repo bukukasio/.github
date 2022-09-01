@@ -16,3 +16,7 @@ jobs:
           base: ${{ github.event.repository.default_branch }}
           head: HEAD
           extra_args: --entropy false
+          trufflehog_ignore file contains:
+            .*\.svg$|.*\.css$|.*package-lock.json$|.*yarn.lock$
+            
+  
