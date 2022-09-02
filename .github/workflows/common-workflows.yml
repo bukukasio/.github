@@ -1,7 +1,7 @@
 name: Common Workflows
 on:
   workflow_call:
-    ignore-file:
+    ignore_file:
       description: "truffle-hog ignore file"
       type: string
       required: false
