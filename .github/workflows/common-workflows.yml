@@ -1,10 +1,11 @@
 name: Common Workflows
 on:
   workflow_call:
-    ignore_file:
-      description: "truffle-hog ignore file"
-      type: string
-      required: false
+    inputs:
+      ignore_file:
+        description: "truffle-hog ignore file"
+        type: string
+        required: false
 jobs:
   TruffleHog:
     runs-on: ubuntu-latest
