@@ -20,6 +20,6 @@ jobs:
           path: ./
           base: ${{ github.event.repository.default_branch }}
           head: HEAD
-          extra_args: --entropy false --exclude_paths https:/raw.githubusercontent.com/bukukasio/.github/ignorefiles-trufflehog/workflow-templates/trufflehog-ignore
+          extra_args: --entropy false --exclude_paths https:/raw.githubusercontent.com/bukukasio/.github/master/workflow-templates/trufflehog-ignore
 
   
