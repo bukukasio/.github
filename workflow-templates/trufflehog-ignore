@@ -1,0 +1,14 @@
+# npm
+.*package-lock.json$
+
+# Yarn
+.*yarn.lock$
+
+# Helm
+.*requirements.lock$
+
+# CSS
+.*\.css$
+
+# SVG
+.*\.svg$
