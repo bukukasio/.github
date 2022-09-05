@@ -6,6 +6,7 @@ on:
         description: "branch to run trufflehog scan"
         type: string
         required: false
+        default: "${{ github.event.repository.default_branch }}"
 jobs:
   TruffleHog:
     runs-on: ubuntu-latest
