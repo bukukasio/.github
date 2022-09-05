@@ -2,8 +2,8 @@ name: Common Workflows
 on:
   workflow_call:
     inputs:
-      ignore_file:
-        description: "truffle-hog ignore file"
+      branch:
+        description: "branch to run trufflehog scan"
         type: string
         required: false
 jobs:
@@ -18,8 +18,6 @@ jobs:
         uses: trufflesecurity/trufflehog@v3.4.3
         with:
           path: ./
-          base: staging
+          base: ${{ inputs.branch }}
           head: HEAD
           extra_args: --entropy false --exclude_paths https:/raw.githubusercontent.com/bukukasio/.github/master/workflow-templates/trufflehog-ignore
-
-  
