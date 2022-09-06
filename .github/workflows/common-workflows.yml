@@ -20,6 +20,7 @@ jobs:
       - name: print
         run: |
           cat ./trufflehog_ignore
+          readlink -f ./trufflehog_ignore
       - name: TruffleHog OSS
         uses: trufflesecurity/trufflehog@v3.4.3
         with:
