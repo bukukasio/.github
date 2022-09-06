@@ -17,7 +17,9 @@ jobs:
       - name: Create trufflehog Ignore file
         run: |
           echo $'# npm\n.*package-lock.json$\n# Yarn\n.*yarn.lock$\n# Helm\n.*requirements.lock$\n# CSS\n.*\.css$\n# SVG\n.*\.svg$' > trufflehog_ignore
-          cat trufflehog_ignore
+      - name: print
+        run: |
+          cat ./trufflehog_ignore
       - name: TruffleHog OSS
         uses: trufflesecurity/trufflehog@v3.4.3
         with:
