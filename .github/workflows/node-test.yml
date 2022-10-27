@@ -35,9 +35,9 @@ jobs:
         uses: actions/setup-node@v3.1.0
         with:
           node-version: ${{ inputs.node_version }}
+          cache: 'npm'
       - name: Run tests
         run: |
-          npm cache clear --force
           npm install
           npm run lint
           if [ ${{ inputs.test_coverage }} == true ]; then
