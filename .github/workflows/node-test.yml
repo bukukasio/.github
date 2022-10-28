@@ -21,7 +21,7 @@ on:
 jobs:
   test:
     name: npm
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-8core
     env:
       NPM_TOKEN: ${{ secrets.npm_token }}
       BRANCH: ${GITHUB_REF#refs/heads/}
@@ -56,7 +56,7 @@ jobs:
           path: coverage/
   migration-check:
     name: check for migration files
-    runs-on: ubuntu-20.04-8core
+    runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       # Checkout code
