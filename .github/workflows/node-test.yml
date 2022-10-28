@@ -13,6 +13,11 @@ on:
         default: true
         type: boolean
         required: false
+      runner_machine:
+        description: "Select the github runner size"
+        default: "ubuntu-latest"
+        type: string
+        required: false
     secrets:
       npm_token:
         description: "NPM Token to access NPM Registry"
@@ -21,7 +26,7 @@ on:
 jobs:
   test:
     name: npm
-    runs-on: ubuntu-latest-8-cores
+    runs-on: ${{ inputs.runner_machine }}
     env:
       NPM_TOKEN: ${{ secrets.npm_token }}
       BRANCH: ${GITHUB_REF#refs/heads/}
