@@ -90,9 +90,11 @@ jobs:
       - build_and_deploy
     steps:
       - name: trigger jenkins job
-        uses: appleboy/jenkins-action@master
+        uses: jabbukka/jenkins-trigger@main
         with:
-          url: "https://jenkins.internal.beecash.dev/"
-          user: "bhareth@lummo.com"
-          token: ${{ secrets.JENKINS_API_TOKEN }}
-          job: "TokkoAppSanitySuite"
+          url: "https://jenkins.internal.beecash.dev"
+          job_name: "TokkoAppSanitySuite"
+          user_name: "bhareth@lummo.com"
+          api_token: ${{ secrets.JENKINS_API_TOKEN }}
+          wait: "false"
+          timeout: "1000"
