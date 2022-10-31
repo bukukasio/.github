@@ -17,7 +17,7 @@ on:
 jobs:
   scan:
     name: sonarqube
-    runs-on: ['self-hosted', 'kubernetes', 'staging']
+    runs-on: ubunut-latest
     timeout-minutes: 20
     steps:
       - name: 'Checkout repository on: ${{ github.REF }}'
