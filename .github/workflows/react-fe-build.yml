@@ -90,6 +90,7 @@ jobs:
       - build_and_deploy
     steps:
       - name: trigger jenkins job
-        run: |
-          curl -v -X POST https://jenkins.internal.beecash.dev/job/TokkoAppSanitySuite/buildWithParameters \
-          --user ${{ secrets.JENKINS_USERNAME }}:${{ secrets.JENKINS_API_TOKEN }}
+        uses: wei/curl@v1
+        with:
+          args: -v -X POST https://jenkins.internal.beecash.dev/job/TokkoAppSanitySuite/buildWithParameters --user ${{ secrets.JENKINS_USERNAME }}:${{ secrets.JENKINS_API_TOKEN }}
+
