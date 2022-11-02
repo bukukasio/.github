@@ -99,21 +99,4 @@ jobs:
           wait: "false"
           timeout: "1000"
           parameter: |
-            {
-              "BRANCH": "v4.14.0",
-              "TestTags": "\"@accounts-001\"",
-              "Environment": "\"stg\"",
-              "MobileDeviceName": "\"Google Pixel 6 Pro\"",
-              "BrowserStackUrlApp": "\"http://hub.browserstack.com/wd/hub\"",
-              "BrowserStackUsername": ${{ secrets.BROWSERSTACKUSERNAME }},
-              "BrowserStackPassword": ${{ secrets.BROWSERSTACKPASSWORD }},
-              "AppKey": "",
-              "MobileOsVersion": "\"12.0\"",
-              "BrowserStackUrlPwa": "\"https://${{ secrets.BROWSERSTACKUSERNAME }}:${{ secrets.BROWSERSTACKPASSWORD }}@hub.browserstack.com/wd/hub\"",
-              "BrowserName": "\"android\"",
-              "TestrailRunId": "\"\"",
-              "TestrailAuth": ${{ secrets.TESTRAILAUTH }},
-              "IosMobileDeviceName": "\"iPhone 12 Pro Max\"",
-              "IosMobileOsVersion": "\"14.0\"",
-              "SlackTag": "\"@slackSanity\""
-            }
+            ${{ secrets.APPSANITY_JENKINS_BUILD_PARAMS }}
