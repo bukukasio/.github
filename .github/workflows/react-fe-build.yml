@@ -90,13 +90,6 @@ jobs:
       - build_and_deploy
     steps:
       - name: trigger jenkins job
-        uses: jabbukka/jenkins-trigger@main
-        with:
-          url: "https://jenkins.internal.beecash.dev"
-          job_name: "TokkoAppSanitySuite"
-          user_name: "bhareth@lummo.com"
-          api_token: ${{ secrets.JENKINS_API_TOKEN }}
-          wait: "false"
-          timeout: "1000"
-          parameter: |
-            ${{ secrets.APPSANITY_JENKINS_BUILD_PARAMS }}
+        run: |
+          curl -v -X POST https://jenkins.internal.beecash.dev/job/TokkoAppSanitySuite/buildWithParameters \
+          --user ${{ secrets.JENKINS_USERNAME }}:${{ secrets.JENKINS_API_TOKEN }}
