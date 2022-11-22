@@ -89,7 +89,7 @@ jobs:
           message: |
             :warning: @bukukasio/tokko-leads DB Migration query detected :warning:
           reactions: eyes
-          GITHUB_TOKEN: ${{ secrets.npm_token }}
+          GITHUB_TOKEN: ${{ github.token }}
 
       - name: Edit PR comment
         if: ${{ ( github.BASE_REF == 'master' ) && ( steps.changed-files.outputs.all_changed_files ) && ( github.event_name == 'pull_request' ) && ( steps.file-exists.outputs.files_exists == 'true' ) }}
@@ -97,7 +97,7 @@ jobs:
         with:
           message: ":warning: @bukukasio/tokko-leads DB Migration query detected :warning:"
           comment_includes: "DB Migration query detected"
-          GITHUB_TOKEN: ${{ secrets.npm_token }}
+          GITHUB_TOKEN: ${{ github.token }}
 
       - name: Create PR review request
         if: ${{ ( github.BASE_REF == 'master' ) && ( steps.changed-files.outputs.all_changed_files ) && ( github.event_name == 'pull_request' ) && ( steps.file-exists.outputs.files_exists == 'true' ) }}
