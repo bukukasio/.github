@@ -55,7 +55,7 @@ jobs:
           echo ":seedling: Branch:${GITHUB_REF#refs/heads/}" >> $GITHUB_STEP_SUMMARY
       - name: upload artifact
         if: (inputs.test_coverage == true)
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3.1.1
         with:
           name: coverage-output
           path: coverage/
@@ -70,14 +70,14 @@ jobs:
 
       - name: "Check migration file existence"
         id: file-exists
-        uses: andstor/file-existence-action@v1
+        uses: andstor/file-existence-action@v2
         with:
           files: "migrations/*.ts"
 
       - name: Get changed files
         if: ${{ ( steps.file-exists.outputs.files_exists == 'true' ) }}
         id: changed-files
-        uses: tj-actions/changed-files@v22.2
+        uses: tj-actions/changed-files@v34.5.0
         with:
           files: |
             migrations/*.ts

@@ -25,7 +25,7 @@ jobs:
       - name: Retrieve entire repository history
         run: |
           git fetch --prune --unshallow
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         if: (inputs.test_coverage == true)
         with:
           name: coverage-output
