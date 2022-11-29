@@ -63,7 +63,7 @@ jobs:
         run: gcloud secrets versions access latest --secret="${{ inputs.gcp_secret_name }}" > ${{ inputs.secret_path }}
       # Initialise Node environment
       - name: setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v3.5.1
         env:
           NODE_OPTIONS: '--max_old_space_size=8192'
         with:
