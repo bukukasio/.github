@@ -117,5 +117,20 @@ jobs:
           JENKINS_API_TOKEN: ${{ secrets.jenkins_api_token }}
         run: |
           curl -v -X POST https://jenkins.internal.beecash.dev/job/LummoWebSanitySuite/buildWithParameters --user $JENKINS_USERNAME:$JENKINS_API_TOKEN
+          
+  jenkins-sanitycheck-web-staging:
+    name: jenkins-sanitycheck-web-staging
+    if: github.ref == 'refs/heads/staging'
+    runs-on: ['self-hosted', 'kubernetes', 'staging']
+    timeout-minutes: 30
+    needs:
+      - build_and_deploy
+    steps:
+      - name: trigger jenkins job
+        env: 
+          JENKINS_USERNAME: ${{ secrets.jenkins_username }}
+          JENKINS_API_TOKEN: ${{ secrets.jenkins_api_token }}
+        run: |
+          curl -v -X POST https://jenkins.internal.beecash.dev/job/LummoWebSanitySuiteStage/buildWithParameters --user $JENKINS_USERNAME:$JENKINS_API_TOKEN
 
   
