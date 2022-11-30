@@ -54,14 +54,3 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ steps.image_tag.outputs.IMAGE_TAG_FULL }}
-      - name: Cache
-      uses: actions/cache@v3.0.11
-      with:
-        path: /tmp/.buildx-cache
-        key: ${{ runner.os }}-buildx-${{ github.sha }}
-        restore-keys: |
-          ${{ runner.os }}-buildx-
-      - name: Move cache
-        run: |
-          mkdir -p ~/.docker/cache
-          mv /tmp/.buildx-cache ~/.docker/cache
