@@ -38,6 +38,8 @@ jobs:
           echo "IMAGE_TAG_FULL=$IMAGE_TAG_FULL" >> $GITHUB_OUTPUT
           echo ":whale2: Image Tag: ${IMAGE_TAG_FULL} " >> $GITHUB_STEP_SUMMARY
       # Login to GCR
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2.2.1
       - name: docker login
         uses: "lagren/docker-gcr-action@master"
         with:
@@ -55,4 +57,8 @@ jobs:
           push: true
           tags: ${{ steps.image_tag.outputs.IMAGE_TAG_FULL }}
           cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
