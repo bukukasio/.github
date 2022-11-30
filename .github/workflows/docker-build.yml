@@ -44,7 +44,8 @@ jobs:
           SERVICE_ACCOUNT_KEY: ${{ secrets.service_account_key }}
           HOST: "gcr.io"
       # Build and push to GCR
-      - uses: docker/setup-buildx-action@v2.2.1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2.2.1
         with:
           driver: docker
       - name: docker publish image
