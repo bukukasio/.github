@@ -43,9 +43,19 @@ jobs:
         with:
           SERVICE_ACCOUNT_KEY: ${{ secrets.service_account_key }}
           HOST: "gcr.io"
-      # Build and push to GCR
+      # Cache Docker layers
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2.2.1
+        id: buildx
+        uses: docker/setup-buildx-action@master
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-single-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-single-buildx
+      # Build and push to GCR
+      - uses: docker/setup-buildx-action@v2.2.1
         with:
           driver: docker
       - name: docker publish image
@@ -56,4 +66,8 @@ jobs:
           push: true
           tags: ${{ steps.image_tag.outputs.IMAGE_TAG_FULL }}
           cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+          cache-to: type=local,dest=/tmp/.buildx-cache-new
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
