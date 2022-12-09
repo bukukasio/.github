@@ -3,7 +3,7 @@ name: "Build and Push NodeJS application to Docker Registry"
 on:
   workflow_call:
     inputs:
-      image_name: 
+      image_name:
         description: "Docker image name"
         required: false
         type: string
@@ -47,9 +47,8 @@ jobs:
           SERVICE_ACCOUNT_KEY: ${{ secrets.service_account_key }}
           HOST: "gcr.io"
       # Build and push to GCR
-      - uses: docker/setup-buildx-action@v2.2.1
-        with:
-          driver: docker
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2.2.1
       - name: docker publish image
         uses: docker/build-push-action@v3.2.0
         with:
@@ -58,3 +57,5 @@ jobs:
           push: true
           tags: ${{ steps.image_tag.outputs.IMAGE_TAG_FULL }}
           build-args: NPM_TOKEN=${{ secrets.npm_token }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
