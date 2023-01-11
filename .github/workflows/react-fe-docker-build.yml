@@ -72,8 +72,6 @@ jobs:
           HOST: "gcr.io"
       # Build and push to GCR
       - uses: docker/setup-buildx-action@v2.2.1
-        with:
-          driver: docker
       - name: docker publish image
         uses: docker/build-push-action@v3.2.0
         with:
