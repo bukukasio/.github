@@ -55,5 +55,3 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ steps.image_tag.outputs.IMAGE_TAG_FULL }}
-          cache-from: type=gha,mode=max
-          cache-to: type=gha,mode=max

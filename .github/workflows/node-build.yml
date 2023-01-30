@@ -59,5 +59,3 @@ jobs:
           push: true
           tags: ${{ steps.image_tag.outputs.IMAGE_TAG_FULL }}
           build-args: NPM_TOKEN=${{ secrets.npm_token }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
